@@ -8,3 +8,4 @@ export * from './poll.sticker';
 export * from './quiz.sticker';
 export * from './question.sticker';
 export * from './slider.sticker';
+export * from './media.sticker';

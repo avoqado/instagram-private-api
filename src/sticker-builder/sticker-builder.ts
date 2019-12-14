@@ -18,6 +18,8 @@ import {
   QuizStickerOptions,
   SliderSticker,
   SliderStickerOptions,
+  MediaSticker,
+  MediaStickerOptions,
 } from './stickers';
 import { plainToClass } from 'class-transformer';
 import { defaults } from 'lodash';
@@ -84,6 +86,10 @@ export class StickerBuilder {
 
   public static question(options: QuestionStickerOptions): QuestionSticker {
     return plainToClass(QuestionSticker, options);
+  }
+
+  public static media(options: MediaStickerOptions): MediaSticker {
+    return plainToClass(MediaSticker, options);
   }
 
   public static quiz(options: QuizStickerOptions): QuizSticker {
