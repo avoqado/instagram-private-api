@@ -265,7 +265,7 @@ export class PublishService extends Repository {
     });
   }
 
-  public async story(options: PostingStoryPhotoOptions | PostingStoryVideoOptions) {
+  public async story(options: PostingStoryPhotoOptions | PostingStoryVideoOptions, uploadId?: string) {
     const isPhoto = (arg: PostingStoryOptions): arg is PostingStoryPhotoOptions =>
       (arg as PostingStoryPhotoOptions).file !== undefined;
 
@@ -277,7 +277,7 @@ export class PublishService extends Repository {
 
     const uploadAndConfigure = () =>
       isPhoto(options)
-        ? this.uploadAndConfigureStoryPhoto(options, configureOptions)
+        ? this.uploadAndConfigureStoryPhoto(options, configureOptions, uploadId)
         : this.uploadAndConfigureStoryVideo(options, configureOptions);
 
     // check for directThread => no stickers supported
@@ -498,9 +498,19 @@ export class PublishService extends Repository {
   private async uploadAndConfigureStoryPhoto(
     options: PostingStoryPhotoOptions,
     configureOptions: MediaConfigureStoryBaseOptions,
+    uploadedId: string,
   ) {
     const uploadId = Date.now().toString();
     const imageSize = await sizeOf(options.file);
+
+    if (uploadedId) {
+      return await this.client.media.configureToStory({
+        ...configureOptions,
+        upload_id: uploadedId,
+        width: imageSize.width,
+        height: imageSize.height,
+      });
+    }
     await this.client.upload.photo({
       file: options.file,
       uploadId,
