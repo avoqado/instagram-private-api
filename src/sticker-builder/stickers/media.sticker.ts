@@ -2,12 +2,12 @@ import { InstaSticker } from './insta-sticker';
 
 export interface MediaStickerOptions {
   mediaId: string;
-  mediaOwner: string;
+  mediaOwnerId: string;
 }
 
 export class MediaSticker extends InstaSticker implements MediaStickerOptions {
   mediaId: string;
-  mediaOwner: string;
+  mediaOwnerId: string;
   width = 0.44510135;
   height = 0.7994792;
 
