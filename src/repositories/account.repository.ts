@@ -105,7 +105,7 @@ export class AccountRepository extends Repository {
     return body;
   }
 
-  async create({ username, password, email, first_name }) {
+  async create({ username, password, email, first_name, day = 15, month = 12, year = 2000, key = null }) {
     const { body } = await Bluebird.try(() =>
       this.client.request.send({
         method: 'POST',
@@ -115,22 +115,23 @@ export class AccountRepository extends Repository {
           password,
           email,
           first_name,
+          day,
+          year,
+          month,
           guid: this.client.state.uuid,
           device_id: this.client.state.deviceId,
           _csrftoken: this.client.state.cookieCsrfToken,
           force_sign_up_code: '',
           qs_stamp: '',
           waterfall_id: this.client.state.uuid,
-          sn_nonce: '',
-          sn_result: 'API_ERROR:+null',
+          sn_nonce: this.createSnNonce(email, key),
+          sn_result: 'API_ERROR: class X.7WQ:null',
           is_secondary_account_creation: false,
-          jazoest: '22327',
+          jazoest: AccountRepository.createJazoest(this.client.state.phoneId),
           tos_version: 'row',
           suggestedUsername: '',
+          adid: this.client.state.adid,
           phone_id: this.client.state.phoneId,
-          day: 15,
-          year: 2000,
-          month: 12,
         }),
       }),
     ).catch(IgResponseError, error => {
@@ -144,6 +145,10 @@ export class AccountRepository extends Repository {
       }
     });
     return body;
+  }
+
+  private createSnNonce(email: string, key?: string): string {
+    return [email, Date.now(), key].join('|');
   }
 
   public async currentUser() {
